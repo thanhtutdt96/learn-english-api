@@ -152,9 +152,9 @@ class DB_Functions
 
     public function getFeaturedCourses()
     {
-        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link FROM courses ORDER BY RAND() LIMIT 8");
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses ORDER BY RAND() LIMIT 8");
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $courses = array();
 
@@ -166,6 +166,7 @@ class DB_Functions
             $course['price'] = $price;
             $course['description'] = $description;
             $course['link'] = $link;
+            $course['rating'] = $rating;
 
             array_push($courses, $course);
         }
@@ -173,11 +174,11 @@ class DB_Functions
         return $courses;
     }
 
-    public function getTopCourses()
+    public function getTopCommunicationCourses()
     {
-        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link FROM courses WHERE category_id = 'CA1' OR category_id = 'CA8' ORDER BY RAND() LIMIT 8");
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses WHERE category_id = 'CA1' OR category_id = 'CA8' ORDER BY RAND() LIMIT 8");
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $courses = array();
 
@@ -189,6 +190,31 @@ class DB_Functions
             $course['price'] = $price;
             $course['description'] = $description;
             $course['link'] = $link;
+            $course['rating'] = $rating;
+
+            array_push($courses, $course);
+        }
+
+        return $courses;
+    }
+
+    public function getTopProficiencyCourses()
+    {
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses WHERE category_id = 'CA2' OR category_id = 'CA3' ORDER BY RAND() LIMIT 8");
+        $stmt->execute();
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
+
+        $courses = array();
+
+        while ($stmt->fetch()) {
+            $course = array();
+            $course['icon'] = $icon;
+            $course['course_id'] = $course_id;
+            $course['course_name'] = $course_name;
+            $course['price'] = $price;
+            $course['description'] = $description;
+            $course['link'] = $link;
+            $course['rating'] = $rating;
 
             array_push($courses, $course);
         }
@@ -198,10 +224,10 @@ class DB_Functions
 
     public function getCoursesByCategoryId($category_id)
     {
-        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link FROM courses WHERE category_id = ?");
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses WHERE category_id = ?");
         $stmt->bind_param("s", $category_id);
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $courses = array();
 
@@ -213,6 +239,7 @@ class DB_Functions
             $course['price'] = $price;
             $course['description'] = $description;
             $course['link'] = $link;
+            $course['rating'] = $rating;
 
             array_push($courses, $course);
         }
@@ -295,10 +322,10 @@ class DB_Functions
 
     public function getCoursesByEmail($email)
     {
-        $stmt = $this->conn->prepare("SELECT courses.icon, courses.course_id, courses.course_name, courses.price, courses.description, courses.link FROM user_courses, courses WHERE user_courses.course_id = courses.course_id and user_courses.email = ?");
+        $stmt = $this->conn->prepare("SELECT courses.icon, courses.course_id, courses.course_name, courses.price, courses.description, courses.link, courses.rating, courses.progress FROM user_courses, courses WHERE user_courses.course_id = courses.course_id and user_courses.email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating, $progress);
 
         $courses = array();
 
@@ -310,6 +337,8 @@ class DB_Functions
             $course['price'] = $price;
             $course['description'] = $description;
             $course['link'] = $link;
+            $course['rating'] = $rating;
+            $course['progress'] = $progress;
 
             array_push($courses, $course);
         }
@@ -328,10 +357,10 @@ class DB_Functions
 
     public function getFavoritesByEmail($email)
     {
-        $stmt = $this->conn->prepare("SELECT courses.icon, courses.course_id, courses.course_name, courses.price, courses.description, courses.link FROM user_favorites, courses WHERE user_favorites.course_id = courses.course_id and user_favorites.email = ?");
+        $stmt = $this->conn->prepare("SELECT courses.icon, courses.course_id, courses.course_name, courses.price, courses.description, courses.link, courses.rating FROM user_favorites, courses WHERE user_favorites.course_id = courses.course_id and user_favorites.email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $courses = array();
 
@@ -343,6 +372,7 @@ class DB_Functions
             $course['price'] = $price;
             $course['description'] = $description;
             $course['link'] = $link;
+            $course['rating'] = $rating;
 
             array_push($courses, $course);
         }
@@ -399,10 +429,10 @@ class DB_Functions
 
     public function getLessonsByCourseId($course_id)
     {
-        $stmt = $this->conn->prepare("SELECT lesson_id, lesson_name, lesson_number, duration, link FROM lessons WHERE course_id = ?");
+        $stmt = $this->conn->prepare("SELECT lesson_id, lesson_name, lesson_number, duration, link, rating FROM lessons WHERE course_id = ?");
         $stmt->bind_param("s", $course_id);
         $stmt->execute();
-        $stmt->bind_result($lesson_id, $lesson_name, $lesson_number, $duration, $link);
+        $stmt->bind_result($lesson_id, $lesson_name, $lesson_number, $duration, $link, $rating);
 
         $lessons = array();
 
@@ -413,6 +443,7 @@ class DB_Functions
             $lesson["lesson_number"] = $lesson_number;
             $lesson["duration"] = $duration;
             $lesson["link"] = $link;
+            $lesson["rating"] = $rating;
 
             array_push($lessons, $lesson);
         }
@@ -422,11 +453,11 @@ class DB_Functions
 
     public function getSearchResults($search_query)
     {
-        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link FROM courses WHERE course_name LIKE ? OR description LIKE ? or price LIKE ? or tag LIKE ?");
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses WHERE course_name LIKE ? OR description LIKE ? or price LIKE ? or tag LIKE ?");
         $param = '%'.$search_query.'%';
         $stmt->bind_param("ssss", $param, $param, $param, $param);
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $results = array();
 
@@ -438,6 +469,7 @@ class DB_Functions
             $result["price"] = $price;
             $result['description'] = $description;
             $result['link'] = $link;
+            $result['rating'] = $rating;
 
             array_push($results, $result);
         }
@@ -572,11 +604,11 @@ class DB_Functions
 
     public function getCourseSuggestions($rank)
     {
-        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link FROM courses WHERE tag LIKE ? ORDER BY RAND() LIMIT 3");
+        $stmt = $this->conn->prepare("SELECT icon, course_id, course_name, price, description, link, rating FROM courses WHERE tag LIKE ? ORDER BY RAND() LIMIT 3");
         $param = '%'.$rank.'%';
         $stmt->bind_param("s", $param);
         $stmt->execute();
-        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link);
+        $stmt->bind_result($icon, $course_id, $course_name, $price, $description, $link, $rating);
 
         $suggestions = array();
 
@@ -588,6 +620,7 @@ class DB_Functions
             $suggestion["price"] = $price;
             $suggestion['description'] = $description;
             $suggestion['link'] = $link;
+            $suggestion['rating'] = $rating;
 
             array_push($suggestions, $suggestion);
         }

@@ -96,7 +96,9 @@ CREATE TABLE IF NOT EXISTS `courses` (
   `icon` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `link` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `tag` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` date NOT NULL
+  `created_at` date NOT NULL,
+  `rating` FLOAT DEFAULT 0 NOT NULL,
+  `progress` int(11) DEFAULT 0 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -196,7 +198,8 @@ CREATE TABLE IF NOT EXISTS `lessons` (
   `course_id` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `duration` time NOT NULL,
   `link` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `lesson_number` text COLLATE utf8mb4_unicode_ci NOT NULL
+  `lesson_number` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `rating` FLOAT DEFAULT 0 NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --

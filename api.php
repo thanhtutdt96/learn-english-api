@@ -270,12 +270,20 @@ if (isset($_GET['apicall'])) {
             $response['courses'] = $db->getFeaturedCourses();
             break;
 
-        case 'gettopcourses':
+        case 'gettopcommunicationcourses':
             $db = new DB_Functions();
 
             $response['error'] = false;
             $response['message'] = '';
-            $response['courses'] = $db->getTopCourses();
+            $response['courses'] = $db->getTopCommunicationCourses();
+            break;
+
+        case 'gettopproficiencycourses':
+            $db = new DB_Functions();
+
+            $response['error'] = false;
+            $response['message'] = '';
+            $response['courses'] = $db->getTopProficiencyCourses();
             break;
 
         case 'getfirstquizquestions':
